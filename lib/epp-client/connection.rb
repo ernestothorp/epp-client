@@ -54,7 +54,7 @@ module EPPClient
     # sends a frame
     def send_frame(xml)
       @sent_frame = xml
-      @socket.write([xml.size + 4].pack("N") + xml)
+      @socket.write([xml.bytesize + 4].pack("N") + xml)
       sent_frame_to_xml
       return
     end
