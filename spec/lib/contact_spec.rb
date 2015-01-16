@@ -22,6 +22,15 @@ describe 'Contacts' do
           {:name=>"sah8013", :avail=>false, :reason=>"In use"},
           {:name=>"8013sah", :avail=>true}])
     end
+    it 'single contatct' do
+      xml_c = readCleanXML('spec/xml/contact_check_single_c.xml')
+      xml_s = readCleanXML('spec/xml/contact_check_single_s.xml')
+      allow_message_expectations_on_nil
+      expect(nil).to receive(:write).with([xml_c.length+4].pack('N')+xml_c).once
+      expect(nil).to receive(:read).with(4).once {[xml_s.length+4].pack('N')}
+      expect(nil).to receive(:read).with(xml_s.length).once {xml_s}
+      expect(tester.contact_check('ABCD')).to eq([{:name=>'ABCD',:avail=>true}])
+    end
   end
   context 'info' do
     it 'IETF sample' do
