@@ -7,6 +7,17 @@ module EPPClient
   # Has to be included after the initialize, domain_info and domain_update
   # definitions.
   module RGP
+
+    SCHEMAS_EXT_IETF = %w[
+      rgp-1.0
+    ]
+
+    EPPClient::SCHEMAS_URL.merge!(SCHEMAS_EXT_IETF.inject({}) do |a,s|
+      a[s.sub(/-1\.0$/, '')] = "urn:ietf:params:xml:ns:#{s}" if s =~ /-1\.0$/
+      a[s] = "urn:ietf:params:xml:ns:#{s}"
+      a
+    end)
+
     def initialize(args) #:nodoc:
       super
       @extensions << EPPClient::SCHEMAS_URL['rgp']
