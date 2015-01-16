@@ -2,16 +2,15 @@
 require File.expand_path('../lib/epp-client/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = 'epp-client-base'
+  gem.name          = 'globo-epp-client'
   gem.version       = EPPClient::VERSION
-  gem.authors       = ['Mathieu Arnold']
-  gem.email         = ['m@absolight.fr']
+  gem.authors       = ['Ernesto Thorp']
+  gem.email         = ['ernestothorp@gmail.com']
   gem.description   = 'An extensible EPP client library.'
-  gem.summary       = 'An extensible EPP client library'
-  gem.homepage       = "https://github.com/Absolight/epp-client"
-
-  gem.required_ruby_version = '>= 1.8.7'
-  gem.required_rubygems_version = ">= 1.3.6"
+  gem.summary       = 'An extensible EPP client library based on https://github.com/Absolight/epp-client'
+  gem.homepage       = "https://github.com/ernestothorp/epp-client"
+  gem.required_ruby_version = '>= 2.0.0'
+  gem.required_rubygems_version = ">= 2.0.0"
 
   gem.files         = [
     'ChangeLog',
@@ -47,8 +46,9 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency 'bundler', '>= 1.0.0'
-  gem.add_dependency('nokogiri', '~> 1.4')
-  gem.add_dependency('builder',  '>= 2.1.2')
+  gem.add_development_dependency "bundler", "~> 1.6"
+  gem.add_development_dependency "rake"
   gem.add_development_dependency 'rspec'
+
+  gem.add_dependency('nokogiri', '~> 1.4')
 end
