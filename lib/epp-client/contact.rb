@@ -4,7 +4,7 @@ module EPPClient
 
 		CONTACT_NS = 'contact'
 
-		def contact_check_xml(*contacts)
+		def contact_check_xml(contacts)
 			command do |xml|
 				xml.check do
 					xml.check do
@@ -31,7 +31,7 @@ module EPPClient
     def contact_check(*contacts)
       contacts.flatten!
 
-      response = send_request(contact_check_xml(*contacts))
+      response = send_request(contact_check_xml(contacts))
       get_result(:xml => response, :callback => :contact_check_process)
     end
 
