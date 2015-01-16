@@ -229,7 +229,7 @@ module EPPClient
             if args.key?(:ns)
               domain_nss_xml(xml, args[:ns])
             end
-            xml.registrant args[:registrant] if args.key?(:registrant)
+            xml[DOMAIN_NS].registrant args[:registrant] if args.key?(:registrant)
             if args.key?(:contacts)
               domain_contacts_xml(xml, args[:contacts])
             end
@@ -337,7 +337,7 @@ module EPPClient
               end
             end
             if args.key?(:chg) && (args[:chg].key?(:registrant) || args[:chg].key?(:authInfo))
-              xml.chg do
+              xml[DOMAIN_NS].chg do
                 if args[:chg].key?(:registrant)
                   xml[DOMAIN_NS].registrant args[:chg][:registrant]
                 end
@@ -414,5 +414,36 @@ module EPPClient
       end
       ret
     end
+
+    def domain_renew(args)
+      response = send_request(domain_renew_xml(args))
+
+      get_result(:xml => response, :callback => :domain_renew_process)
+    end
+
+    def domain_renew_xml(args)
+      command do |xml|
+        xml.renew do
+          xml.renew do
+            xml.parent.namespace = xml.parent.add_namespace_definition(DOMAIN_NS, EPPClient::SCHEMAS_URL[DOMAIN_NS])
+            xml[DOMAIN_NS].name args[:name]
+            xml[DOMAIN_NS].curExpDate args[:curExpDate]
+            if args.key?(:period)
+              xml[DOMAIN_NS].period({:unit => args[:period][:unit]}, args[:period][:value])
+            end
+          end
+        end
+      end
+    end
+
+    def domain_renew_process(xml)
+      dom = xml.xpath('//domain:renData', EPPClient::SCHEMAS_URL).children
+      res = {:name => dom.xpath('//domain:name', EPPClient::SCHEMAS_URL).text}
+      unless (result = dom.xpath('//domain:exDate', EPPClient::SCHEMAS_URL).text).empty?
+        res[:exDate] = DateTime.parse(result)
+      end
+      res
+    end
+
   end
 end
