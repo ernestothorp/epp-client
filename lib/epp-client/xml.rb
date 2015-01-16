@@ -149,7 +149,7 @@ module EPPClient
           yield(xml)
         end
       end
-      ext.doc.child
+      ext.doc.child.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML).strip
     end
 
     # Insert node in root before clTRID node
