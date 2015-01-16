@@ -27,27 +27,30 @@ module EPPClient
     PARSERS = {}
 
     def poll_req_process(xml) #:nodoc:
-      ret = {}
+      ret = {
+        :msg_id => @msgQ_id,
+        :msgs_count => @msgQ_count,
+      }
       if (date = xml.xpath("epp:msgQ/epp:qDate", EPPClient::SCHEMAS_URL)).size > 0
-	ret[:qDate] = DateTime.parse(date.text)
+        ret[:qDate] = DateTime.parse(date.text)
       end
       if (msg = xml.xpath("epp:msgQ/epp:msg", EPPClient::SCHEMAS_URL)).size > 0
-	ret[:msg] = msg.text
-	ret[:msg_xml] = msg.to_s
+        ret[:msg] = msg.text
+        ret[:msg_xml] = msg.to_s
       end
       if (obj = xml.xpath('epp:resData', EPPClient::SCHEMAS_URL)).size > 0 ||
-	(obj = xml.xpath('epp:extension', EPPClient::SCHEMAS_URL)).size > 0
-	ret[:obj_xml] = obj.to_s
-	PARSERS.each do |xpath,parser|
-	  if obj.xpath(xpath, EPPClient::SCHEMAS_URL).size > 0
-	    ret[:obj] = case parser
-			when Symbol
-			  send(parser, xml)
-			else
-			  raise NotImplementedError
-			end
-	  end
-	end
+        (obj = xml.xpath('epp:extension', EPPClient::SCHEMAS_URL)).size > 0
+        ret[:obj_xml] = obj.to_s
+        PARSERS.each do |xpath,parser|
+          if obj.xpath(xpath, EPPClient::SCHEMAS_URL).size > 0
+            ret[:obj] = case parser
+            when Symbol
+              send(parser, xml)
+            else
+              raise NotImplementedError
+            end
+          end
+        end
       end
       ret
     end
